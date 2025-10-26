@@ -10,6 +10,7 @@ This custom integration allows you to monitor your comma.ai devices (EON, comma 
 ## Installation
 
 1. Open HACS store
+  - If you don't have HACS installed, follow [these instructions](https://www.hacs.xyz/docs/use/)
 2. In the top right, click the three dots, and click "Custom Repositories"
 3. Add `https://github.com/bscholer/home-assistant-comma-ai`, then close the modal
 4. Search for `comma.ai` in the HACS store. Open `comma.ai`, and click "Download"
