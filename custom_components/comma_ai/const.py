@@ -6,7 +6,7 @@ from typing import Final
 
 from homeassistant.const import Platform
 
-DOMAIN: Final = "comma"
+DOMAIN: Final = "comma_ai"
 PLATFORMS = [Platform.SENSOR, Platform.DEVICE_TRACKER]
 
 CONF_JWT_TOKEN: Final = "jwt_token"
