@@ -9,11 +9,14 @@ This custom integration allows you to monitor your comma.ai devices (EON, comma 
 
 ## Installation
 
-1. Copy the `comma` directory to your `custom_components` directory
-2. Restart Home Assistant
-3. Go to Settings → Devices & Services → Add Integration
-4. Search for "comma.ai"
-5. Enter your JWT token (get it from [jwt.comma.ai](https://jwt.comma.ai))
+1. Open HACS store
+2. In the top right, click the three dots, and click "Custom Repositories"
+3. Add `https://github.com/bscholer/home-assistant-comma-ai`, then close the modal
+4. Search for `comma.ai` in the HACS store. Open `comma.ai`, and click "Download"
+5. Restart Home Assistant
+6. Go to Settings → Devices & Services → Add Integration
+7. Search for "comma.ai"
+8. Enter your JWT token (get it from [jwt.comma.ai](https://jwt.comma.ai))
 
 ## Configuration
 
