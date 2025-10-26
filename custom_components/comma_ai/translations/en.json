@@ -38,17 +38,8 @@
       "last_ping": {
         "name": "Last ping"
       },
-      "last_gps_time": {
-        "name": "Last GPS update"
-      },
-      "gps_speed": {
-        "name": "GPS speed"
-      },
-      "gps_bearing": {
-        "name": "GPS bearing"
-      },
-      "gps_accuracy": {
-        "name": "GPS accuracy"
+      "last_location_time": {
+        "name": "Last location update"
       },
       "total_distance": {
         "name": "Total distance"

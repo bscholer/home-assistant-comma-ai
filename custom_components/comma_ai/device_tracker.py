@@ -72,7 +72,7 @@ class CommaDeviceTracker(CoordinatorEntity[CommaDataUpdateCoordinator], TrackerE
         device = self.coordinator.data["devices"].get(self.dongle_id)
         if device is None:
             return None
-        return device["last_gps_lat"]
+        return device["location_lat"]
 
     @property
     def longitude(self) -> float | None:
@@ -80,15 +80,13 @@ class CommaDeviceTracker(CoordinatorEntity[CommaDataUpdateCoordinator], TrackerE
         device = self.coordinator.data["devices"].get(self.dongle_id)
         if device is None:
             return None
-        return device["last_gps_lng"]
+        return device["location_lng"]
 
     @property
     def location_accuracy(self) -> int:
         """Return the location accuracy of the device."""
-        device = self.coordinator.data["devices"].get(self.dongle_id)
-        if device is None or device["last_gps_accuracy"] is None:
-            return 0
-        return int(device["last_gps_accuracy"])
+        # Location accuracy is not provided by the comma.ai location API
+        return 0
 
     @property
     def battery_level(self) -> int | None:
@@ -103,8 +101,8 @@ class CommaDeviceTracker(CoordinatorEntity[CommaDataUpdateCoordinator], TrackerE
         return (
             super().available
             and device is not None
-            and device["last_gps_lat"] is not None
-            and device["last_gps_lng"] is not None
+            and device["location_lat"] is not None
+            and device["location_lng"] is not None
         )
 
 

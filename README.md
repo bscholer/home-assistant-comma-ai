@@ -61,12 +61,7 @@ For each comma.ai device, the following entities will be created:
 
 #### Device Status
 - `sensor.<device_name>_last_ping` - Last time the device communicated with comma servers (timestamp)
-- `sensor.<device_name>_last_gps_update` - Last GPS update timestamp
-
-#### GPS Data
-- `sensor.<device_name>_gps_speed` - Current GPS speed (m/s, auto-converts to mph/kph)
-- `sensor.<device_name>_gps_bearing` - Current GPS bearing (degrees)
-- `sensor.<device_name>_gps_accuracy` - GPS accuracy in meters
+- `sensor.<device_name>_last_location_time` - Last location update timestamp
 
 #### All-Time Statistics
 - `sensor.<device_name>_total_distance` - Total distance driven with openpilot (km, auto-converts to miles)

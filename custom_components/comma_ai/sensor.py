@@ -12,8 +12,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import DEGREE, UnitOfLength, UnitOfSpeed, UnitOfTime
-from homeassistant.core import callback
+from homeassistant.const import UnitOfLength, UnitOfTime
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -39,13 +38,6 @@ class CommaSensorEntityDescription(SensorEntityDescription, frozen_or_thawed=Tru
     extra_values_fn: Callable[[CommaDevice], dict[str, Any]] | None = None
 
 
-def get_gps_speed(device: CommaDevice) -> StateType:
-    """Get GPS speed in m/s."""
-    if device["last_gps_speed"] is None:
-        return None
-    return round(device["last_gps_speed"], 2)
-
-
 def get_last_ping_time(device: CommaDevice) -> StateType:
     """Get last ping time as datetime."""
     if device["last_athena_ping"] is None:
@@ -53,12 +45,12 @@ def get_last_ping_time(device: CommaDevice) -> StateType:
     return datetime.fromtimestamp(device["last_athena_ping"], tz=timezone.utc)
 
 
-def get_last_gps_time(device: CommaDevice) -> StateType:
-    """Get last GPS time as datetime."""
-    if device["last_gps_time"] is None:
+def get_last_location_time(device: CommaDevice) -> StateType:
+    """Get last location time as datetime."""
+    if device["location_time"] is None:
         return None
     # API returns milliseconds
-    return datetime.fromtimestamp(device["last_gps_time"] / 1000, tz=timezone.utc)
+    return datetime.fromtimestamp(device["location_time"] / 1000, tz=timezone.utc)
 
 
 SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
@@ -87,36 +79,10 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
         value_fn=get_last_ping_time,
     ),
     CommaSensorEntityDescription(
-        key="last_gps_time",
-        translation_key="last_gps_time",
+        key="last_location_time",
+        translation_key="last_location_time",
         device_class=SensorDeviceClass.TIMESTAMP,
-        value_fn=get_last_gps_time,
-    ),
-    CommaSensorEntityDescription(
-        key="gps_speed",
-        translation_key="gps_speed",
-        native_unit_of_measurement=UnitOfSpeed.METERS_PER_SECOND,
-        suggested_unit_of_measurement=UnitOfSpeed.MILES_PER_HOUR,
-        device_class=SensorDeviceClass.SPEED,
-        state_class=SensorStateClass.MEASUREMENT,
-        suggested_display_precision=1,
-        value_fn=get_gps_speed,
-    ),
-    CommaSensorEntityDescription(
-        key="gps_bearing",
-        translation_key="gps_bearing",
-        native_unit_of_measurement=DEGREE,
-        icon="mdi:compass",
-        state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda device: device["last_gps_bearing"],
-    ),
-    CommaSensorEntityDescription(
-        key="gps_accuracy",
-        translation_key="gps_accuracy",
-        native_unit_of_measurement="m",
-        icon="mdi:crosshairs-gps",
-        state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda device: device["last_gps_accuracy"],
+        value_fn=get_last_location_time,
     ),
     # All-time stats
     CommaSensorEntityDescription(
