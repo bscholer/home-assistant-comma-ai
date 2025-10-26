@@ -5,15 +5,7 @@ This custom integration allows you to monitor your comma.ai devices (EON, comma 
 ## Features
 
 - **Device Tracking**: Track the GPS location of your comma.ai device on the map
-- **Sensor Entities**: Monitor various device statistics:
-  - Device type
-  - openpilot version
-  - Prime status
-  - Last ping time
-  - Last GPS update time
-  - GPS speed
-  - GPS bearing
-  - GPS accuracy
+- **Sensor Entities**: Monitor various device statistics and usage data (see below for full list)
 
 ## Installation
 
@@ -57,14 +49,30 @@ Once configured, the integration will:
 For each comma.ai device, the following entities will be created:
 
 ### Sensors
+
+#### Device Information
 - `sensor.<device_name>_device_type` - The type of device (e.g., "neo", "three")
 - `sensor.<device_name>_openpilot_version` - The installed openpilot version
-- `sensor.<device_name>_prime_status` - Whether the device has comma prime
-- `sensor.<device_name>_last_ping` - Last time the device communicated with comma servers
+- `sensor.<device_name>_prime_status` - Whether the device has comma prime ("Yes" or "No")
+
+#### Device Status
+- `sensor.<device_name>_last_ping` - Last time the device communicated with comma servers (timestamp)
 - `sensor.<device_name>_last_gps_update` - Last GPS update timestamp
-- `sensor.<device_name>_gps_speed` - Current GPS speed
-- `sensor.<device_name>_gps_bearing` - Current GPS bearing
+
+#### GPS Data
+- `sensor.<device_name>_gps_speed` - Current GPS speed (m/s, auto-converts to mph/kph)
+- `sensor.<device_name>_gps_bearing` - Current GPS bearing (degrees)
 - `sensor.<device_name>_gps_accuracy` - GPS accuracy in meters
+
+#### All-Time Statistics
+- `sensor.<device_name>_total_distance` - Total distance driven with openpilot (km, auto-converts to miles)
+- `sensor.<device_name>_total_minutes` - Total minutes driven with openpilot
+- `sensor.<device_name>_total_routes` - Total number of routes driven with openpilot
+
+#### Weekly Statistics
+- `sensor.<device_name>_week_distance` - Distance driven this week (km, auto-converts to miles)
+- `sensor.<device_name>_week_minutes` - Minutes driven this week
+- `sensor.<device_name>_week_routes` - Number of routes driven this week
 
 ### Device Tracker
 - `device_tracker.<device_name>_location` - GPS location for map tracking
