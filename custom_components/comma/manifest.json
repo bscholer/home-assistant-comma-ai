@@ -1,0 +1,14 @@
+{
+  "domain": "comma",
+  "name": "comma.ai",
+  "codeowners": [
+    "@user"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/bscholer/comma-homeassistant",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/bscholer/comma-homeassistant/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

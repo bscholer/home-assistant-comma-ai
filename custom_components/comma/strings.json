@@ -1,0 +1,80 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to comma.ai",
+        "description": "Enter your comma.ai JWT token. You can get it from https://jwt.comma.ai",
+        "data": {
+          "jwt_token": "JWT Token"
+        }
+      },
+      "reconfigure": {
+        "title": "Update JWT Token",
+        "description": "Enter a new JWT token for {username}. Get a fresh token from https://jwt.comma.ai (tokens expire after 90 days)",
+        "data": {
+          "jwt_token": "JWT Token"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid JWT token. Please check your token and try again.",
+      "cannot_connect": "Failed to connect to comma.ai API. Please try again later."
+    },
+    "abort": {
+      "already_configured": "This comma.ai account is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "device_type": {
+        "name": "Device type"
+      },
+      "openpilot_version": {
+        "name": "openpilot version"
+      },
+      "is_prime": {
+        "name": "Prime status"
+      },
+      "last_ping": {
+        "name": "Last ping"
+      },
+      "last_gps_time": {
+        "name": "Last GPS update"
+      },
+      "gps_speed": {
+        "name": "GPS speed"
+      },
+      "gps_bearing": {
+        "name": "GPS bearing"
+      },
+      "gps_accuracy": {
+        "name": "GPS accuracy"
+      },
+      "total_distance": {
+        "name": "Total distance"
+      },
+      "total_minutes": {
+        "name": "Total drive time"
+      },
+      "total_routes": {
+        "name": "Total routes"
+      },
+      "week_distance": {
+        "name": "Distance this week"
+      },
+      "week_minutes": {
+        "name": "Drive time this week"
+      },
+      "week_routes": {
+        "name": "Routes this week"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Location"
+      }
+    }
+  }
+}
+
+
