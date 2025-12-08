@@ -30,7 +30,6 @@ class CommaDevice(TypedDict):
     is_owner: bool
     is_paired: bool
     prime: bool
-    prime_type: int | None
     location_lat: float | None
     location_lng: float | None
     location_time: int | None
@@ -107,7 +106,6 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     is_owner=device.get("is_owner", False),
                     is_paired=device.get("is_paired", False),
                     prime=device.get("prime", False),
-                    prime_type=device.get("prime_type"),
                     location_lat=location.get("lat") if location else None,
                     location_lng=location.get("lng") if location else None,
                     location_time=location.get("time") if location else None,
