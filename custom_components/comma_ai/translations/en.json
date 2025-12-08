@@ -5,14 +5,16 @@
         "title": "Connect to comma.ai",
         "description": "Enter your comma.ai JWT token. You can get it from https://jwt.comma.ai",
         "data": {
-          "jwt_token": "JWT Token"
+          "jwt_token": "JWT Token",
+          "ignore_non_owned": "Ignore devices you don't own"
         }
       },
       "reconfigure": {
         "title": "Update JWT Token",
         "description": "Enter a new JWT token for {username}. Get a fresh token from https://jwt.comma.ai (tokens expire after 90 days)",
         "data": {
-          "jwt_token": "JWT Token"
+          "jwt_token": "JWT Token",
+          "ignore_non_owned": "Ignore devices you don't own"
         }
       }
     },
@@ -26,14 +28,26 @@
   },
   "entity": {
     "sensor": {
+      "dongle_id": {
+        "name": "Dongle ID"
+      },
       "device_type": {
         "name": "Device type"
+      },
+      "is_owner": {
+        "name": "Is owner"
+      },
+      "is_paired": {
+        "name": "Is paired"
       },
       "openpilot_version": {
         "name": "openpilot version"
       },
       "is_prime": {
         "name": "Prime status"
+      },
+      "prime_type": {
+        "name": "Prime type"
       },
       "last_ping": {
         "name": "Last ping"
