@@ -55,10 +55,28 @@ def get_last_location_time(device: CommaDevice) -> StateType:
 
 SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
     CommaSensorEntityDescription(
+        key="dongle_id",
+        translation_key="dongle_id",
+        icon="mdi:identifier",
+        value_fn=lambda device: device["dongle_id"],
+    ),
+    CommaSensorEntityDescription(
         key="device_type",
         translation_key="device_type",
         icon="mdi:car-connected",
         value_fn=lambda device: device["device_type"],
+    ),
+    CommaSensorEntityDescription(
+        key="is_owner",
+        translation_key="is_owner",
+        icon="mdi:account-check",
+        value_fn=lambda device: "Yes" if device["is_owner"] else "No",
+    ),
+    CommaSensorEntityDescription(
+        key="is_paired",
+        translation_key="is_paired",
+        icon="mdi:link-variant",
+        value_fn=lambda device: "Yes" if device["is_paired"] else "No",
     ),
     CommaSensorEntityDescription(
         key="openpilot_version",

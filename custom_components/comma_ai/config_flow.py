@@ -10,7 +10,7 @@ from homeassistant.config_entries import ConfigFlow
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import CommaAPIClient, CommaAPIError
-from .const import CONF_JWT_TOKEN, DOMAIN
+from .const import CONF_IGNORE_NON_OWNED, CONF_JWT_TOKEN, DOMAIN
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigFlowResult
@@ -20,6 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_JWT_TOKEN): str,
+        vol.Optional(CONF_IGNORE_NON_OWNED, default=False): bool,
     }
 )
 
@@ -59,6 +60,7 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         if user_input is not None:
             self.data[CONF_JWT_TOKEN] = user_input[CONF_JWT_TOKEN]
+            self.data[CONF_IGNORE_NON_OWNED] = user_input.get(CONF_IGNORE_NON_OWNED, False)
             await self.validate_config()
             
             if not self.errors:
@@ -86,17 +88,24 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
         
         if user_input is not None:
             self.data[CONF_JWT_TOKEN] = user_input[CONF_JWT_TOKEN]
+            self.data[CONF_IGNORE_NON_OWNED] = user_input.get(CONF_IGNORE_NON_OWNED, entry.data.get(CONF_IGNORE_NON_OWNED, False))
             await self.validate_config()
             
             if not self.errors:
                 return self.async_update_reload_and_abort(
                     entry,
-                    data={**entry.data, CONF_JWT_TOKEN: user_input[CONF_JWT_TOKEN]},
+                    data={
+                        CONF_JWT_TOKEN: user_input[CONF_JWT_TOKEN],
+                        CONF_IGNORE_NON_OWNED: self.data[CONF_IGNORE_NON_OWNED],
+                    },
                 )
         
         # Pre-fill with existing token (masked)
         existing_token = entry.data.get(CONF_JWT_TOKEN, "")
-        suggested_values = {CONF_JWT_TOKEN: existing_token if len(existing_token) < 20 else ""}
+        suggested_values = {
+            CONF_JWT_TOKEN: existing_token if len(existing_token) < 20 else "",
+            CONF_IGNORE_NON_OWNED: entry.data.get(CONF_IGNORE_NON_OWNED, False),
+        }
         
         schema = self.add_suggested_values_to_schema(USER_DATA_SCHEMA, suggested_values)
         return self.async_show_form(

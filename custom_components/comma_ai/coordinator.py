@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, TypedDict
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import CommaAPIError
-from .const import DOMAIN, UPDATE_INTERVAL
+from .const import CONF_IGNORE_NON_OWNED, DOMAIN, UPDATE_INTERVAL
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -72,6 +72,11 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
 
             profile = profile_task.result()
             devices_list = devices_task.result()
+
+            # Filter out non-owned devices if configured
+            ignore_non_owned = self.config_entry.data.get(CONF_IGNORE_NON_OWNED, False)
+            if ignore_non_owned:
+                devices_list = [d for d in devices_list if d.get("is_owner", False)]
 
             # Convert devices list to dict keyed by dongle_id
             devices: dict[str, CommaDevice] = {}
