@@ -46,9 +46,6 @@
       "is_prime": {
         "name": "Prime status"
       },
-      "prime_type": {
-        "name": "Prime type"
-      },
       "last_ping": {
         "name": "Last ping"
       },
