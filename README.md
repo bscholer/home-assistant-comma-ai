@@ -29,6 +29,8 @@ The integration is configured through the UI. You only need to provide your JWT 
 1. Get your JWT token from [jwt.comma.ai](https://jwt.comma.ai)
 2. Add the integration in Settings → Devices & Services
 3. Enter your JWT token
+4. If you only want devices owned by you to show up, enable "Ignore devices you don't own".
+   - This is primarily helpful for people who have had users share their devices with them for debugging purposes. These shared devices will be filtered out.
 
 ### Updating Your JWT Token
 
@@ -57,8 +59,11 @@ For each comma.ai device, the following entities will be created:
 ### Sensors
 
 #### Device Information
+- `sensor.<device_name>_dongle_id` - The Dongle ID of the device
 - `sensor.<device_name>_device_type` - The type of device (e.g., "neo", "three")
 - `sensor.<device_name>_openpilot_version` - The installed openpilot version
+- `sensor.<device_name>_is_owner` - Whether you are the owner of the device ("Yes" or "No")
+- `sensor.<device_name>_is_paired` - Whether the device is paired ("Yes" or "No")
 - `sensor.<device_name>_prime_status` - Whether the device has comma prime ("Yes" or "No")
 
 #### Device Status
@@ -92,5 +97,7 @@ If you encounter issues:
 ## Support
 
 For issues with this integration, please check the Home Assistant logs for detailed error messages.
+
+Feel free to open an Issue or Pull Request!
 
 
