@@ -89,12 +89,6 @@ class CommaDeviceTracker(CoordinatorEntity[CommaDataUpdateCoordinator], TrackerE
         return 0
 
     @property
-    def battery_level(self) -> int | None:
-        """Return the battery level of the device."""
-        # Battery level is not provided by the comma.ai API
-        return None
-
-    @property
     def available(self) -> bool:
         """Return if entity is available."""
         device = self.coordinator.data["devices"].get(self.dongle_id)
