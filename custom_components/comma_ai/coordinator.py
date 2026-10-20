@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from datetime import timedelta
 from typing import TYPE_CHECKING, Any, TypedDict
 
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import CommaAPIError
-from .const import CONF_IGNORE_NON_OWNED, DOMAIN, UPDATE_INTERVAL
+from .api import CommaAPIError, CommaAuthError
+from .const import ATHENA_UPDATE_INTERVAL, CONF_IGNORE_NON_OWNED, DOMAIN, UPDATE_INTERVAL
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -36,6 +38,18 @@ class CommaDevice(TypedDict):
     last_athena_ping: int | None
     openpilot_version: str | None
     stats: dict[str, Any] | None
+    car_battery_voltage: float | None
+    car_running: bool | None
+
+
+class AthenaData(TypedDict):
+    """Type for live data fetched from the device via athena."""
+
+    car_battery_voltage: float | None
+    car_running: bool | None
+
+
+NO_ATHENA_DATA = AthenaData(car_battery_voltage=None, car_running=None)
 
 
 class CommaCoordinatorData(TypedDict):
@@ -62,6 +76,8 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
         self.api_client = api_client
+        self._athena_cache: dict[str, AthenaData] = {}
+        self._athena_fetched_at = 0.0
 
     async def _async_update_data(self) -> CommaCoordinatorData:
         """Fetch data from API."""
@@ -84,6 +100,9 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             # Fetch stats and location for each device
             stats_tasks = {}
             location_tasks = {}
+            # athena goes over the device's own (often metered) connection, so poll it less often
+            fetch_athena = time.monotonic() - self._athena_fetched_at >= ATHENA_UPDATE_INTERVAL
+            athena_tasks = {}
             async with asyncio.TaskGroup() as tg:
                 for device in devices_list:
                     dongle_id = device["dongle_id"]
@@ -93,11 +112,19 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     location_tasks[dongle_id] = tg.create_task(
                         self._get_device_location(dongle_id)
                     )
+                    if fetch_athena:
+                        athena_tasks[dongle_id] = tg.create_task(
+                            self._get_athena_data(dongle_id)
+                        )
+            if fetch_athena:
+                self._athena_cache = {d: t.result() for d, t in athena_tasks.items()}
+                self._athena_fetched_at = time.monotonic()
             
             for device in devices_list:
                 dongle_id = device["dongle_id"]
                 stats = stats_tasks[dongle_id].result()
                 location = location_tasks[dongle_id].result()
+                athena = self._athena_cache.get(dongle_id, NO_ATHENA_DATA)
                 
                 devices[dongle_id] = CommaDevice(
                     dongle_id=dongle_id,
@@ -112,6 +139,8 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     last_athena_ping=device.get("last_athena_ping"),
                     openpilot_version=device.get("openpilot_version"),
                     stats=stats,
+                    car_battery_voltage=athena["car_battery_voltage"],
+                    car_running=athena["car_running"],
                 )
 
             return CommaCoordinatorData(
@@ -119,9 +148,13 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                 devices=devices,
             )
 
-        except CommaAPIError as err:
-            raise UpdateFailed(f"Error communicating with API: {err}") from err
         except Exception as err:
+            if isinstance(err, ExceptionGroup):
+                if err.subgroup(CommaAuthError):
+                    raise ConfigEntryAuthFailed("JWT token is invalid or expired") from err
+                err = err.exceptions[0]
+            if isinstance(err, CommaAPIError):
+                raise UpdateFailed(f"Error communicating with API: {err}") from err
             raise UpdateFailed(f"Unexpected error: {err}") from err
 
     async def _get_device_stats(self, dongle_id: str) -> dict[str, Any] | None:
@@ -140,4 +173,20 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             _LOGGER.debug("Could not fetch location for device %s", dongle_id)
             return None
 
+    async def _get_athena_data(self, dongle_id: str) -> AthenaData:
+        """Get live data from the device, all None if it's offline."""
+        try:
+            device_state, panda_states = await asyncio.gather(
+                self.api_client.get_athena_message(dongle_id, "deviceState"),
+                self.api_client.get_athena_message(dongle_id, "pandaStates"),
+            )
+        except CommaAuthError:
+            raise
+        except Exception:
+            _LOGGER.debug("Could not reach device %s via athena", dongle_id)
+            return NO_ATHENA_DATA
 
+        return AthenaData(
+            car_battery_voltage=panda_states[0]["voltage"] / 1000 if panda_states else None,
+            car_running=device_state.get("started") if device_state else None,
+        )

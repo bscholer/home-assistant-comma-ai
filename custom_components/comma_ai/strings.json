@@ -9,6 +9,13 @@
           "ignore_non_owned": "Ignore devices you don't own"
         }
       },
+      "reauth_confirm": {
+        "title": "comma.ai token expired",
+        "description": "Your comma.ai JWT token has expired. Get a fresh one from https://jwt.comma.ai (tokens expire after 90 days)",
+        "data": {
+          "jwt_token": "JWT Token"
+        }
+      },
       "reconfigure": {
         "title": "Update JWT Token",
         "description": "Enter a new JWT token for {username}. Get a fresh token from https://jwt.comma.ai (tokens expire after 90 days)",
@@ -23,11 +30,21 @@
       "cannot_connect": "Failed to connect to comma.ai API. Please try again later."
     },
     "abort": {
-      "already_configured": "This comma.ai account is already configured."
+      "already_configured": "This comma.ai account is already configured.",
+      "reauth_successful": "JWT token updated.",
+      "reconfigure_successful": "JWT token updated."
     }
   },
   "entity": {
+    "binary_sensor": {
+      "car_running": {
+        "name": "Car running"
+      }
+    },
     "sensor": {
+      "car_battery_voltage": {
+        "name": "Car battery"
+      },
       "dongle_id": {
         "name": "Dongle ID"
       },

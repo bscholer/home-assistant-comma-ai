@@ -12,7 +12,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import UnitOfLength, UnitOfTime
+from homeassistant.const import UnitOfElectricPotential, UnitOfLength, UnitOfTime
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -101,6 +101,15 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
         translation_key="last_location_time",
         device_class=SensorDeviceClass.TIMESTAMP,
         value_fn=get_last_location_time,
+    ),
+    CommaSensorEntityDescription(
+        key="car_battery_voltage",
+        translation_key="car_battery_voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        value_fn=lambda device: device["car_battery_voltage"],
     ),
     # All-time stats
     CommaSensorEntityDescription(

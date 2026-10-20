@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
 import voluptuous as vol
@@ -45,7 +46,7 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         try:
             profile = await api_client.get_profile()
-            self.username = profile.get("username", "Unknown")
+            self.username = profile.get("username") or profile.get("email") or profile["id"]
             _LOGGER.debug("Successfully authenticated as: %s", self.username)
         except CommaAPIError as exc:
             _LOGGER.error("Authentication failed: %s", exc)
@@ -115,6 +116,34 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
             description_placeholders={
                 "username": self.username or "your account"
             },
+        )
+
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
+        """Handle reauth when the JWT token has expired."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Ask for a new JWT token."""
+        entry = self._get_reauth_entry()
+
+        if user_input is not None:
+            self.data[CONF_JWT_TOKEN] = user_input[CONF_JWT_TOKEN]
+            await self.validate_config()
+
+            if not self.errors:
+                return self.async_update_reload_and_abort(
+                    entry,
+                    data_updates={CONF_JWT_TOKEN: user_input[CONF_JWT_TOKEN]},
+                )
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=vol.Schema({vol.Required(CONF_JWT_TOKEN): str}),
+            errors=self.errors,
         )
 
 

@@ -5,6 +5,12 @@ All notable changes to the comma.ai Home Assistant integration will be documente
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-20
+
+### Added
+- Car battery voltage sensor and car running binary sensor, read live from the device via athena (polled every 5 minutes, since it uses the device's own connection)
+- Reauth flow: an expired JWT token now prompts to re-authenticate instead of failing setup
+
 ## [1.0.0] - 2025-10-26
 
 ### Added
