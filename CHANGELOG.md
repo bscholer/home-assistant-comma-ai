@@ -5,6 +5,17 @@ All notable changes to the comma.ai Home Assistant integration will be documente
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-25
+
+### Added
+- Road camera (outside) and driver camera (inside) entities, using comma connect's WebRTC live stream
+  - Streams start on demand and stop after 30 seconds without viewers
+  - Snapshot and MJPEG support
+  - `last_error` attribute explaining why a stream could not start
+
+### Changed
+- Requires Home Assistant 2025.12 or newer (for aiortc's PyAV requirement)
+
 ## [1.0.0] - 2025-10-26
 
 ### Added

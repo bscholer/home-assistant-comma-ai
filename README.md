@@ -8,6 +8,7 @@ This custom integration allows you to monitor your comma.ai devices (EON, comma 
 
 - **Device Tracking**: Track the GPS location of your comma.ai device on the map
 - **Sensor Entities**: Monitor various device statistics and usage data (see below for full list)
+- **Live Cameras**: View the road (outside) and driver (inside) cameras live, the same stream as comma connect's camera button
 
 ## Installation
 
@@ -83,9 +84,23 @@ For each comma.ai device, the following entities will be created:
 ### Device Tracker
 - `device_tracker.<device_name>_location` - GPS location for map tracking
 
+### Cameras
+- `camera.<device_name>_road_camera` - Live view from the wide road camera (outside the car)
+- `camera.<device_name>_driver_camera` - Live view from the driver camera (inside the car)
+
+The cameras use the same WebRTC live stream as the camera button in [comma connect](https://connect.comma.ai): Home Assistant sends a `startStream` request to the device through comma's athena relay, then receives the video peer-to-peer (or through comma's TURN relay). Frames are served to Home Assistant as snapshots and as an MJPEG stream, so they work in picture cards, the more-info dialog and `camera.snapshot`.
+
+Things to know:
+- **The car must be off.** openpilot only live streams while offroad, and the device must be online (awake and connected to Wi-Fi or cellular).
+- **Streams start on demand.** A stream starts when an image is requested (e.g. a dashboard card is visible) and stops 30 seconds after the last request. A card that stays open keeps the stream, and the device's cameras, running. The first image can take 10-20 seconds while the device starts its cameras.
+- **One viewer at a time.** The device accepts a single stream client. Home Assistant will take over an open comma connect live view; if you then open the live view in comma connect, Home Assistant backs off for 2 minutes.
+- **One camera at a time.** The device sends a single video track. Viewing both cameras at once alternates between them every 10 seconds; the other camera shows its last frame meanwhile.
+- The camera's `last_error` attribute shows why the last stream attempt failed (e.g. device offline, or "turn car ignition off to use livestreaming").
+- Streaming needs [aiortc](https://github.com/aiortc/aiortc), which Home Assistant installs automatically. Its latest release does not support the PyAV version that Home Assistant ships, so the integration installs it from a pinned aiortc commit; this requires Home Assistant 2025.12 or newer.
+
 ## API Information
 
-This integration uses the comma.ai public API documented at [api.comma.ai](https://api.comma.ai/).
+This integration uses the comma.ai public API documented at [api.comma.ai](https://api.comma.ai/). Live streaming uses the (undocumented) athena `startStream` method that comma connect uses, so a comma or openpilot update could break it.
 
 ## Troubleshooting
 
@@ -93,6 +108,7 @@ If you encounter issues:
 1. Check that your JWT token is valid at [jwt.comma.ai](https://jwt.comma.ai)
 2. Check the Home Assistant logs for error messages
 3. Ensure your device is online and connected to comma servers
+4. For cameras: make sure the car is off and the live view works in comma connect
 
 ## Support
 
