@@ -5,6 +5,11 @@ All notable changes to the comma.ai Home Assistant integration will be documente
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Distance sensors were 1.6x too low: comma's stats API reports miles, not kilometers. They now follow the Home Assistant unit system instead of always showing miles (#4). Existing installs keep their current display unit; change it in the entity settings if you want km
+
 ## [1.0.0] - 2025-10-26
 
 ### Added

@@ -71,12 +71,12 @@ For each comma.ai device, the following entities will be created:
 - `sensor.<device_name>_last_location_time` - Last location update timestamp
 
 #### All-Time Statistics
-- `sensor.<device_name>_total_distance` - Total distance driven with openpilot (km, auto-converts to miles)
+- `sensor.<device_name>_total_distance` - Total distance driven with openpilot (shown in km or miles, following your Home Assistant unit system)
 - `sensor.<device_name>_total_minutes` - Total minutes driven with openpilot
 - `sensor.<device_name>_total_routes` - Total number of routes driven with openpilot
 
 #### Weekly Statistics
-- `sensor.<device_name>_week_distance` - Distance driven this week (km, auto-converts to miles)
+- `sensor.<device_name>_week_distance` - Distance driven this week (shown in km or miles, following your Home Assistant unit system)
 - `sensor.<device_name>_week_minutes` - Minutes driven this week
 - `sensor.<device_name>_week_routes` - Number of routes driven this week
 

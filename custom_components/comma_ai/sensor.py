@@ -106,8 +106,8 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
     CommaSensorEntityDescription(
         key="total_distance",
         translation_key="total_distance",
-        native_unit_of_measurement=UnitOfLength.KILOMETERS,
-        suggested_unit_of_measurement=UnitOfLength.MILES,
+        # the stats API reports miles; Home Assistant converts to the unit system
+        native_unit_of_measurement=UnitOfLength.MILES,
         device_class=SensorDeviceClass.DISTANCE,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=1,
@@ -134,8 +134,8 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
     CommaSensorEntityDescription(
         key="week_distance",
         translation_key="week_distance",
-        native_unit_of_measurement=UnitOfLength.KILOMETERS,
-        suggested_unit_of_measurement=UnitOfLength.MILES,
+        # the stats API reports miles; Home Assistant converts to the unit system
+        native_unit_of_measurement=UnitOfLength.MILES,
         device_class=SensorDeviceClass.DISTANCE,
         state_class=SensorStateClass.TOTAL,
         suggested_display_precision=1,
