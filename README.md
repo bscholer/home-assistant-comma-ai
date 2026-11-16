@@ -11,15 +11,15 @@ This custom integration allows you to monitor your comma.ai devices (EON, comma 
 
 ## Installation
 
-1. Open HACS store
-    - If you don't have HACS installed, follow [these instructions](https://www.hacs.xyz/docs/use/)
-2. In the top right, click the three dots, and click "Custom Repositories"
-3. Add `https://github.com/bscholer/home-assistant-comma-ai`, then close the modal
-4. Search for `comma.ai` in the HACS store. Open `comma.ai`, and click "Download"
-5. Restart Home Assistant
-6. Go to Settings → Devices & Services → Add Integration
-7. Search for "comma.ai"
-8. Enter your JWT token (get it from [jwt.comma.ai](https://jwt.comma.ai))
+1. In Home Assistant, go to Settings → Marketplace (built into Home Assistant 2026.11+)
+2. Open the menu, choose "Custom repositories", and add `https://github.com/bscholer/home-assistant-comma-ai` as an Integration
+3. Search for `comma.ai`, open it, and click "Download"
+4. Restart Home Assistant
+5. Go to Settings → Devices & Services → Add Integration
+6. Search for "comma.ai"
+7. Enter your JWT token (get it from [jwt.comma.ai](https://jwt.comma.ai))
+
+On Home Assistant older than 2026.11, install [HACS](https://www.hacs.xyz/docs/use/) and add the repository as a custom repository there instead.
 
 ## Configuration
 
