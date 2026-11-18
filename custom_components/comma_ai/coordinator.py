@@ -35,6 +35,12 @@ class CommaDevice(TypedDict):
     location_time: int | None
     last_athena_ping: int | None
     openpilot_version: str | None
+    git_branch: str | None
+    git_commit: str | None
+    git_commit_date: str | None
+    git_remote: str | None
+    git_dirty: bool | None
+    platform: str | None
     stats: dict[str, Any] | None
 
 
@@ -81,9 +87,10 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             # Convert devices list to dict keyed by dongle_id
             devices: dict[str, CommaDevice] = {}
             
-            # Fetch stats and location for each device
+            # Fetch stats, location and recent routes for each device
             stats_tasks = {}
             location_tasks = {}
+            routes_tasks = {}
             async with asyncio.TaskGroup() as tg:
                 for device in devices_list:
                     dongle_id = device["dongle_id"]
@@ -93,11 +100,15 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     location_tasks[dongle_id] = tg.create_task(
                         self._get_device_location(dongle_id)
                     )
+                    routes_tasks[dongle_id] = tg.create_task(
+                        self._get_device_routes(dongle_id)
+                    )
             
             for device in devices_list:
                 dongle_id = device["dongle_id"]
                 stats = stats_tasks[dongle_id].result()
                 location = location_tasks[dongle_id].result()
+                latest_route = self._latest_route(routes_tasks[dongle_id].result())
                 
                 devices[dongle_id] = CommaDevice(
                     dongle_id=dongle_id,
@@ -111,6 +122,12 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     location_time=location.get("time") if location else None,
                     last_athena_ping=device.get("last_athena_ping"),
                     openpilot_version=device.get("openpilot_version"),
+                    git_branch=latest_route.get("git_branch"),
+                    git_commit=latest_route.get("git_commit"),
+                    git_commit_date=latest_route.get("git_commit_date"),
+                    git_remote=latest_route.get("git_remote"),
+                    git_dirty=latest_route.get("git_dirty"),
+                    platform=latest_route.get("platform"),
                     stats=stats,
                 )
 
@@ -139,5 +156,20 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
         except CommaAPIError:
             _LOGGER.debug("Could not fetch location for device %s", dongle_id)
             return None
+
+    async def _get_device_routes(self, dongle_id: str) -> list[dict[str, Any]]:
+        """Get recent device routes, return an empty list if not available."""
+        try:
+            return await self.api_client.get_device_routes(dongle_id)
+        except CommaAPIError:
+            _LOGGER.debug("Could not fetch routes for device %s", dongle_id)
+            return []
+
+    @staticmethod
+    def _latest_route(routes: list[dict[str, Any]]) -> dict[str, Any]:
+        """Return the most recent route, or an empty dict when there are none."""
+        if not routes:
+            return {}
+        return max(routes, key=lambda route: route.get("create_time") or 0)
 
 

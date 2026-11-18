@@ -43,6 +43,18 @@
       "openpilot_version": {
         "name": "openpilot version"
       },
+      "git_branch": {
+        "name": "Software branch"
+      },
+      "git_commit": {
+        "name": "Software commit"
+      },
+      "git_remote": {
+        "name": "Software remote"
+      },
+      "platform": {
+        "name": "Platform"
+      },
       "is_prime": {
         "name": "Prime status"
       },

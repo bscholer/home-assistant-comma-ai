@@ -53,6 +53,21 @@ def get_last_location_time(device: CommaDevice) -> StateType:
     return datetime.fromtimestamp(device["location_time"] / 1000, tz=timezone.utc)
 
 
+def get_short_commit(device: CommaDevice) -> StateType:
+    """Get the abbreviated git commit SHA of the latest uploaded route."""
+    commit = device["git_commit"]
+    return commit[:7] if commit else None
+
+
+def get_git_commit_attributes(device: CommaDevice) -> dict[str, Any]:
+    """Get the full commit details for the abbreviated commit sensor."""
+    return {
+        "commit": device["git_commit"],
+        "commit_date": device["git_commit_date"],
+        "dirty": device["git_dirty"],
+    }
+
+
 SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
     CommaSensorEntityDescription(
         key="dongle_id",
@@ -83,6 +98,31 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
         translation_key="openpilot_version",
         icon="mdi:application-cog",
         value_fn=lambda device: device["openpilot_version"],
+    ),
+    CommaSensorEntityDescription(
+        key="git_branch",
+        translation_key="git_branch",
+        icon="mdi:source-branch",
+        value_fn=lambda device: device["git_branch"],
+    ),
+    CommaSensorEntityDescription(
+        key="git_commit",
+        translation_key="git_commit",
+        icon="mdi:source-commit",
+        value_fn=get_short_commit,
+        extra_values_fn=get_git_commit_attributes,
+    ),
+    CommaSensorEntityDescription(
+        key="git_remote",
+        translation_key="git_remote",
+        icon="mdi:git",
+        value_fn=lambda device: device["git_remote"],
+    ),
+    CommaSensorEntityDescription(
+        key="platform",
+        translation_key="platform",
+        icon="mdi:car-info",
+        value_fn=lambda device: device["platform"],
     ),
     CommaSensorEntityDescription(
         key="is_prime",
