@@ -37,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Software build sensors derived from the latest uploaded route: `git_branch`, `git_commit`, `git_remote` and `platform`
+
 ### Planned
 - Historical route visualization
 - Navigation destination setting
