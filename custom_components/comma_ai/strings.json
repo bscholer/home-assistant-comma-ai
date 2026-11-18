@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect to comma.ai",
-        "description": "Enter your comma.ai JWT token. You can get it from https://jwt.comma.ai",
+        "description": "Enter your comma.ai JWT token. You can get it from {jwt_url}",
         "data": {
           "jwt_token": "JWT Token",
           "ignore_non_owned": "Ignore devices you don't own"
@@ -11,7 +11,7 @@
       },
       "reconfigure": {
         "title": "Update JWT Token",
-        "description": "Enter a new JWT token for {username}. Get a fresh token from https://jwt.comma.ai (tokens expire after 90 days)",
+        "description": "Enter a new JWT token for {username}. Get a fresh token from {jwt_url} (tokens expire after 90 days)",
         "data": {
           "jwt_token": "JWT Token",
           "ignore_non_owned": "Ignore devices you don't own"

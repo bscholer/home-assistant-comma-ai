@@ -10,7 +10,7 @@ from homeassistant.config_entries import ConfigFlow
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import CommaAPIClient, CommaAPIError
-from .const import CONF_IGNORE_NON_OWNED, CONF_JWT_TOKEN, DOMAIN
+from .const import CONF_IGNORE_NON_OWNED, CONF_JWT_TOKEN, DOMAIN, JWT_URL
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigFlowResult
@@ -78,6 +78,7 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=schema,
             errors=self.errors,
+            description_placeholders={"jwt_url": JWT_URL},
         )
 
     async def async_step_reconfigure(
@@ -113,7 +114,8 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
             data_schema=schema,
             errors=self.errors,
             description_placeholders={
-                "username": self.username or "your account"
+                "username": self.username or "your account",
+                "jwt_url": JWT_URL,
             },
         )
 
