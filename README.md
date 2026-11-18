@@ -52,6 +52,8 @@ Once configured, the integration will:
 - Add a device tracker entity for GPS location tracking
 - Update data every 60 seconds
 
+The software branch, commit, remote and platform sensors are derived from the most recent route uploaded by the device. They refresh after the device uploads its next drive.
+
 ## Entities Created
 
 For each comma.ai device, the following entities will be created:
@@ -62,6 +64,10 @@ For each comma.ai device, the following entities will be created:
 - `sensor.<device_name>_dongle_id` - The Dongle ID of the device
 - `sensor.<device_name>_device_type` - The type of device (e.g., "neo", "three")
 - `sensor.<device_name>_openpilot_version` - The installed openpilot version
+- `sensor.<device_name>_git_branch` - Git branch of the openpilot build (e.g. "dev")
+- `sensor.<device_name>_git_commit` - Abbreviated git commit SHA. The full SHA, commit date and dirty flag are available as attributes
+- `sensor.<device_name>_git_remote` - Git remote the openpilot build came from (e.g. "github.com/commaai/openpilot")
+- `sensor.<device_name>_platform` - Vehicle platform reported by openpilot (e.g. "RIVIAN_R1")
 - `sensor.<device_name>_is_owner` - Whether you are the owner of the device ("Yes" or "No")
 - `sensor.<device_name>_is_paired` - Whether the device is paired ("Yes" or "No")
 - `sensor.<device_name>_prime_status` - Whether the device has comma prime ("Yes" or "No")

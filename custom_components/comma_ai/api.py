@@ -66,4 +66,8 @@ class CommaAPIClient:
         """Get device driving statistics."""
         return await self._request("GET", f"/v1.1/devices/{dongle_id}/stats")
 
+    async def get_device_routes(self, dongle_id: str) -> list[dict[str, Any]]:
+        """Get the recent routes uploaded by a device, newest first."""
+        return await self._request("GET", f"/v1/devices/{dongle_id}/routes")
+
 
