@@ -78,6 +78,29 @@ async def test_car_battery_and_running(hass: HomeAssistant, aioclient_mock) -> N
     assert _state(hass, "binary_sensor", "car_running").state == "on"
 
 
+async def test_driving_model(hass: HomeAssistant, aioclient_mock) -> None:
+    """The active driving model from modelManagerSP becomes a sensor."""
+    await _setup(hass, aioclient_mock)
+
+    assert (
+        _state(hass, "sensor", "driving_model").state
+        == "The Cool People's Model (October 03, 2025)"
+    )
+
+
+async def test_driving_model_unknown_without_model_manager(
+    hass: HomeAssistant, aioclient_mock
+) -> None:
+    """Stock openpilot does not publish modelManagerSP, so the sensor is unknown."""
+    await _setup(
+        hass,
+        aioclient_mock,
+        athena={"result": {"deviceState": {"started": False}, "pandaStates": []}},
+    )
+
+    assert _state(hass, "sensor", "driving_model").state == "unknown"
+
+
 async def test_car_stopped(hass: HomeAssistant, aioclient_mock) -> None:
     """A device reporting started=false is off, not unknown."""
     await _setup(

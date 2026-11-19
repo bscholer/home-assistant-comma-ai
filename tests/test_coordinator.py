@@ -5,7 +5,10 @@ from __future__ import annotations
 from unittest.mock import patch
 
 from custom_components.comma_ai.const import DOMAIN
-from custom_components.comma_ai.coordinator import CommaDataUpdateCoordinator
+from custom_components.comma_ai.coordinator import (
+    CommaDataUpdateCoordinator,
+    _get_active_model_display_name,
+)
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
@@ -43,6 +46,17 @@ def test_latest_route_picks_newest() -> None:
 def test_latest_route_without_routes() -> None:
     """No routes gives an empty dict so the git sensors are unknown."""
     assert CommaDataUpdateCoordinator._latest_route([]) == {}
+
+
+def test_get_active_model_display_name() -> None:
+    """The model name comes from modelManagerSP's active bundle."""
+    assert _get_active_model_display_name(None) is None
+    assert _get_active_model_display_name({}) is None
+    assert _get_active_model_display_name({"activeBundle": {}}) is None
+    assert (
+        _get_active_model_display_name({"activeBundle": {"displayName": "Foo"}})
+        == "Foo"
+    )
 
 
 async def test_setup_loads_entry(hass: HomeAssistant, aioclient_mock) -> None:

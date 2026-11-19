@@ -47,6 +47,7 @@ class CommaDevice(TypedDict):
     car_battery_voltage: float | None
     car_running: bool | None
     panda_state: dict[str, Any] | None
+    driving_model: str | None
 
 
 class AthenaData(TypedDict):
@@ -55,9 +56,26 @@ class AthenaData(TypedDict):
     car_battery_voltage: float | None
     car_running: bool | None
     panda_state: dict[str, Any] | None
+    driving_model: str | None
 
 
-NO_ATHENA_DATA = AthenaData(car_battery_voltage=None, car_running=None, panda_state=None)
+NO_ATHENA_DATA = AthenaData(
+    car_battery_voltage=None, car_running=None, panda_state=None, driving_model=None
+)
+
+
+def _get_active_model_display_name(model_manager: dict[str, Any] | None) -> str | None:
+    """Get the display name of the active driving model from a modelManagerSP message.
+
+    ``modelManagerSP`` is published by sunnypilot and its forks; stock openpilot does
+    not send it, in which case no model is reported and this returns None.
+    """
+    if not model_manager:
+        return None
+    active_bundle = model_manager.get("activeBundle")
+    if not active_bundle:
+        return None
+    return active_bundle.get("displayName")
 
 
 class CommaCoordinatorData(TypedDict):
@@ -161,6 +179,7 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     car_battery_voltage=athena["car_battery_voltage"],
                     car_running=athena["car_running"],
                     panda_state=athena["panda_state"],
+                    driving_model=athena["driving_model"],
                 )
 
             return CommaCoordinatorData(
@@ -211,9 +230,10 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
     async def _get_athena_data(self, dongle_id: str) -> AthenaData:
         """Get live data from the device, all None if it's offline."""
         try:
-            device_state, panda_states = await asyncio.gather(
+            device_state, panda_states, model_manager = await asyncio.gather(
                 self.api_client.get_athena_message(dongle_id, "deviceState"),
                 self.api_client.get_athena_message(dongle_id, "pandaStates"),
+                self.api_client.get_athena_message(dongle_id, "modelManagerSP"),
             )
         except CommaAuthError:
             raise
@@ -226,4 +246,5 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             car_battery_voltage=panda_states[0]["voltage"] / 1000 if panda_states else None,
             car_running=device_state.get("started") if device_state else None,
             panda_state=panda_states[0] if panda_states else None,
+            driving_model=_get_active_model_display_name(model_manager),
         )

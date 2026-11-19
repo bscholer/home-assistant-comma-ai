@@ -62,6 +62,12 @@ ATHENA_RESULT = {
     "result": {
         "deviceState": {"started": True},
         "pandaStates": [{"voltage": 13400}],
+        "modelManagerSP": {
+            "activeBundle": {
+                "displayName": "The Cool People's Model (October 03, 2025)",
+                "internalName": "TCPM",
+            },
+        },
     }
 }
 
@@ -92,7 +98,9 @@ def register_api(
     aioclient_mock.get(
         f"{API}/v1/devices/{DONGLE_ID}/routes", json=ROUTES, status=routes_status
     )
-    aioclient_mock.post(f"{ATHENA}/{DONGLE_ID}", json=athena, status=athena_status)
+    aioclient_mock.post(
+        f"{ATHENA}/{DONGLE_ID}", json=athena, status=athena_status, repeat=True
+    )
 
 
 def make_entry(**data: Any) -> MockConfigEntry:
