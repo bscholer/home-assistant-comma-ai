@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- Total drive time now displays in days and weekly drive time in hours by default, instead of minutes (for example 51.2 d instead of 73,740 min). Existing entities keep their current display unit; change it in the entity settings
-
 ### Planned
 - Historical route visualization
 - Navigation destination setting
@@ -18,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Services for advanced operations
 - Multi-language translations
 - Automatic token expiration warnings
+
+## [1.1.1] - 2026-11-19
+
+### Changed
+- Total drive time now displays in days and weekly drive time in hours by default, instead of minutes (for example 51.2 d instead of 73,740 min). Existing entities keep their current display unit; change it in the entity settings
 
 ## [1.1.0] - 2026-11-19
 
