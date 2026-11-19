@@ -7,8 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+- Historical route visualization
+- Navigation destination setting
+- Saved locations management
+- Binary sensors (is_driving, is_online)
+- Services for advanced operations
+- Multi-language translations
+- Automatic token expiration warnings
+
+## [1.1.0] - 2026-11-19
+
+### Added
+- Software build sensors (branch, commit, remote and vehicle platform), derived from the latest route the device uploaded, so they update after the next drive. The commit sensor carries the full SHA, commit date and dirty flag as attributes. Thanks @Nimijneb (#10)
+
 ### Fixed
-- Distance sensors were 1.6x too low: comma's stats API reports miles, not kilometers. They now follow the Home Assistant unit system instead of always showing miles (#4). Existing installs keep their current display unit; change it in the entity settings if you want km
+- Distance sensors were 1.6x too low: comma's stats API reports miles, not kilometers. They now follow the Home Assistant unit system instead of always showing miles. Existing installs keep their current display unit; change it in the entity settings if you want km. Long-term statistics recorded before this fix stay 1.6x too low. Thanks @ds-sebastian (#8, fixes #4)
+- hassfest translation errors: the JWT URL moved into a description placeholder (#11)
+
+### Changed
+- Removed the deprecated `battery_level` override from the device tracker (unsupported from Home Assistant 2027.7). Thanks @ds-sebastian (#6, fixes #5)
 
 ## [1.0.0] - 2025-10-26
 
@@ -39,18 +57,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Translation support (English)
 - Home Assistant 2024.1.0+ compatibility
 - Reconfigure flow for token updates
-
-## [Unreleased]
-
-### Added
-- Software build sensors derived from the latest uploaded route: `git_branch`, `git_commit`, `git_remote` and `platform`
-
-### Planned
-- Historical route visualization
-- Navigation destination setting
-- Saved locations management
-- Binary sensors (is_driving, is_online)
-- Services for advanced operations
-- Multi-language translations
-- Automatic token expiration warnings
-
