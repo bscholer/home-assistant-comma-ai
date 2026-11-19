@@ -14,7 +14,7 @@ from .common import API, ATHENA, DONGLE_ID
 
 
 @pytest.fixture
-async def client(hass) -> CommaAPIClient:
+async def client(hass, aioclient_mock) -> CommaAPIClient:
     """Return an API client using Home Assistant's mocked session."""
     return CommaAPIClient("token", async_get_clientsession(hass))
 
