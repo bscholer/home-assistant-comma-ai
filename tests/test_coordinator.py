@@ -127,9 +127,7 @@ async def test_missing_device_data_degrades_to_unknown(
     hass: HomeAssistant, aioclient_mock
 ) -> None:
     """Failed per-device calls leave sensors unknown instead of failing setup."""
-    register_api(aioclient_mock)
-    aioclient_mock.get(f"{API}/v1/devices/{DONGLE_ID}/routes", status=403)
-    aioclient_mock.get(f"{API}/v1.1/devices/{DONGLE_ID}/stats", status=404)
+    register_api(aioclient_mock, routes_status=403, stats_status=404)
     entry = make_entry()
     await _setup(hass, entry)
 

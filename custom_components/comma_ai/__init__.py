@@ -7,13 +7,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity import DeviceInfo
 
 from .api import CommaAPIClient, CommaAuthError
-from .const import CONF_JWT_TOKEN, DOMAIN, PLATFORMS
+from .const import CONF_JWT_TOKEN, PLATFORMS
 from .coordinator import CommaDataUpdateCoordinator
 
 if TYPE_CHECKING:

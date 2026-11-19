@@ -1,0 +1,7 @@
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+# correctness checks only; existing style issues are out of scope
+select = ["E4", "E7", "E9", "F"]

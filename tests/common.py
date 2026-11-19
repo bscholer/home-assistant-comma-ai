@@ -75,6 +75,8 @@ def register_api(
     devices_status: int = 200,
     athena: Any = ATHENA_RESULT,
     athena_status: int = 200,
+    stats_status: int = 200,
+    routes_status: int = 200,
 ) -> None:
     """Register the comma.ai endpoints on the aiohttp mock."""
     aioclient_mock.get(f"{API}/v1/me/", json=profile, status=profile_status)
@@ -84,8 +86,12 @@ def register_api(
         status=devices_status,
     )
     aioclient_mock.get(f"{API}/v1/devices/{DONGLE_ID}/location", json=LOCATION)
-    aioclient_mock.get(f"{API}/v1.1/devices/{DONGLE_ID}/stats", json=STATS)
-    aioclient_mock.get(f"{API}/v1/devices/{DONGLE_ID}/routes", json=ROUTES)
+    aioclient_mock.get(
+        f"{API}/v1.1/devices/{DONGLE_ID}/stats", json=STATS, status=stats_status
+    )
+    aioclient_mock.get(
+        f"{API}/v1/devices/{DONGLE_ID}/routes", json=ROUTES, status=routes_status
+    )
     aioclient_mock.post(f"{ATHENA}/{DONGLE_ID}", json=athena, status=athena_status)
 
 
