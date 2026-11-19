@@ -8,10 +8,11 @@ from typing import TYPE_CHECKING
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import DeviceInfo
 
-from .api import CommaAPIClient
+from .api import CommaAPIClient, CommaAuthError
 from .const import CONF_JWT_TOKEN, DOMAIN, PLATFORMS
 from .coordinator import CommaDataUpdateCoordinator
 
@@ -48,6 +49,8 @@ async def async_setup_entry(
     try:
         profile = await api_client.get_profile()
         _LOGGER.debug("Authenticated as user: %s", profile.get("username"))
+    except CommaAuthError as err:
+        raise ConfigEntryAuthFailed("JWT token is invalid or expired") from err
     except Exception as err:
         _LOGGER.error("Failed to authenticate with comma.ai: %s", err)
         return False
