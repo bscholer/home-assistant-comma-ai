@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Any
 
 from aiohttp import ClientTimeout
 
+from .const import ATHENA_BASE_URL
+
 if TYPE_CHECKING:
     from aiohttp import ClientSession
 
@@ -31,6 +33,14 @@ class CommaAPIClient:
         self.base_url = "https://api.commadotai.com"
         self.athena_url = "https://athena.comma.ai"
 
+    @property
+    def _headers(self) -> dict[str, str]:
+        """Return the headers used to authenticate requests."""
+        return {
+            "Authorization": f"JWT {self.jwt_token}",
+            "Content-Type": "application/json",
+        }
+
     async def _request(
         self,
         method: str,
@@ -39,12 +49,9 @@ class CommaAPIClient:
     ) -> dict | list:
         """Make a request to the comma.ai API."""
         url = f"{self.base_url}{endpoint}"
-        headers = {
-            "Authorization": f"JWT {self.jwt_token}",
-            "Content-Type": "application/json",
-        }
-
-        response = await self.session.request(method, url, headers=headers, **kwargs)
+        response = await self.session.request(
+            method, url, headers=self._headers, **kwargs
+        )
         
         if response.status == 401:
             raise CommaAuthError("Invalid JWT token")
@@ -73,6 +80,10 @@ class CommaAPIClient:
         """Get device driving statistics."""
         return await self._request("GET", f"/v1.1/devices/{dongle_id}/stats")
 
+    async def get_turn_credentials(self) -> dict[str, Any]:
+        """Get TURN/STUN servers for WebRTC live streaming."""
+        return await self._request("GET", "/v1/me/turn")
+
     async def get_device_routes(self, dongle_id: str) -> list[dict[str, Any]]:
         """Get the recent routes uploaded by a device, newest first."""
         return await self._request("GET", f"/v1/devices/{dongle_id}/routes")
@@ -99,3 +110,36 @@ class CommaAPIClient:
             return None
         body = await response.json(content_type=None)
         return (body.get("result") or {}).get(service)
+
+    async def athena_rpc(
+        self,
+        dongle_id: str,
+        method: str,
+        params: dict[str, Any] | None = None,
+        timeout: float = 30,
+    ) -> dict[str, Any]:
+        """Call a JSON-RPC method on the device through comma's athena relay.
+
+        Returns the raw JSON-RPC response, which holds either "result" or "error".
+        """
+        payload = {
+            "jsonrpc": "2.0",
+            "id": 0,
+            "method": method,
+            "params": params or {},
+        }
+        response = await self.session.post(
+            f"{ATHENA_BASE_URL}/{dongle_id}",
+            json=payload,
+            headers=self._headers,
+            timeout=ClientTimeout(total=timeout),
+        )
+
+        if response.status == 401:
+            raise CommaAPIError("Invalid JWT token")
+        if response.status >= 400:
+            # athena answers 404 "Device not registered" when the device is offline
+            body = (await response.text())[:200]
+            raise CommaAPIError(f"Athena error {response.status}: {body}")
+
+        return await response.json(content_type=None)

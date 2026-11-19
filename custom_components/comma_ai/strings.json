@@ -104,8 +104,14 @@
       "location": {
         "name": "Location"
       }
+    },
+    "camera": {
+      "road_camera": {
+        "name": "Road camera"
+      },
+      "driver_camera": {
+        "name": "Driver camera"
+      }
     }
   }
 }
-
-
