@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+- Historical route visualization
+- Navigation destination setting
+- Saved locations management
+- Binary sensors (is_driving, is_online)
+- Services for advanced operations
+- Multi-language translations
+- Automatic token expiration warnings
+
+## [1.1.1] - 2026-11-19
+
 ### Added
 - Car battery voltage sensor and car running binary sensor, read live from the device via athena (polled every 5 minutes, since it uses the device's own connection). Thanks @georgegebbett (#7)
 - Reauth flow: an expired JWT token now prompts to re-authenticate instead of failing setup. Thanks @georgegebbett (#7)
@@ -16,15 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Total drive time now displays in days and weekly drive time in hours by default, instead of minutes (for example 51.2 d instead of 73,740 min). Existing entities keep their current display unit; change it in the entity settings
-
-### Planned
-- Historical route visualization
-- Navigation destination setting
-- Saved locations management
-- Binary sensors (is_driving, is_online)
-- Services for advanced operations
-- Multi-language translations
-- Automatic token expiration warnings
 
 ## [1.1.0] - 2026-11-19
 
