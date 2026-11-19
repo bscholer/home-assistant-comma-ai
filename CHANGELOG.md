@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Car battery voltage sensor and car running binary sensor, read live from the device via athena (polled every 5 minutes, since it uses the device's own connection). Thanks @georgegebbett (#7)
+- Reauth flow: an expired JWT token now prompts to re-authenticate instead of failing setup. Thanks @georgegebbett (#7)
+
+### Fixed
+- Accounts without a username (for example Google sign-ins) were titled `comma.ai (None)`; the title now falls back to the email, then the user ID. Thanks @georgegebbett (#7)
+
 ### Changed
 - Total drive time now displays in days and weekly drive time in hours by default, instead of minutes (for example 51.2 d instead of 73,740 min). Existing entities keep their current display unit; change it in the entity settings
 
