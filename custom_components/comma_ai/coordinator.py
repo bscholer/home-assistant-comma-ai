@@ -46,6 +46,7 @@ class CommaDevice(TypedDict):
     stats: dict[str, Any] | None
     car_battery_voltage: float | None
     car_running: bool | None
+    panda_state: dict[str, Any] | None
 
 
 class AthenaData(TypedDict):
@@ -53,9 +54,10 @@ class AthenaData(TypedDict):
 
     car_battery_voltage: float | None
     car_running: bool | None
+    panda_state: dict[str, Any] | None
 
 
-NO_ATHENA_DATA = AthenaData(car_battery_voltage=None, car_running=None)
+NO_ATHENA_DATA = AthenaData(car_battery_voltage=None, car_running=None, panda_state=None)
 
 
 class CommaCoordinatorData(TypedDict):
@@ -158,6 +160,7 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
                     stats=stats,
                     car_battery_voltage=athena["car_battery_voltage"],
                     car_running=athena["car_running"],
+                    panda_state=athena["panda_state"],
                 )
 
             return CommaCoordinatorData(
@@ -218,7 +221,9 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             _LOGGER.debug("Could not reach device %s via athena", dongle_id)
             return NO_ATHENA_DATA
 
+        _LOGGER.debug("Athena pandaStates for %s: %s", dongle_id, panda_states)
         return AthenaData(
             car_battery_voltage=panda_states[0]["voltage"] / 1000 if panda_states else None,
             car_running=device_state.get("started") if device_state else None,
+            panda_state=panda_states[0] if panda_states else None,
         )
