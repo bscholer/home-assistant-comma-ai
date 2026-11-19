@@ -230,10 +230,9 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
     async def _get_athena_data(self, dongle_id: str) -> AthenaData:
         """Get live data from the device, all None if it's offline."""
         try:
-            device_state, panda_states, model_manager = await asyncio.gather(
+            device_state, panda_states = await asyncio.gather(
                 self.api_client.get_athena_message(dongle_id, "deviceState"),
                 self.api_client.get_athena_message(dongle_id, "pandaStates"),
-                self.api_client.get_athena_message(dongle_id, "modelManagerSP"),
             )
         except CommaAuthError:
             raise
@@ -246,5 +245,23 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             car_battery_voltage=panda_states[0]["voltage"] / 1000 if panda_states else None,
             car_running=device_state.get("started") if device_state else None,
             panda_state=panda_states[0] if panda_states else None,
-            driving_model=_get_active_model_display_name(model_manager),
+            driving_model=await self._get_driving_model(dongle_id),
         )
+
+    async def _get_driving_model(self, dongle_id: str) -> str | None:
+        """Get the active driving model, or None when it is not reported.
+
+        The ``modelManagerSP`` message is large and only published by sunnypilot
+        and its forks, so fetch it separately: a timeout here must not blank out
+        the other athena sensors.
+        """
+        try:
+            model_manager = await self.api_client.get_athena_message(
+                dongle_id, "modelManagerSP"
+            )
+        except CommaAuthError:
+            raise
+        except Exception:
+            _LOGGER.debug("Could not fetch model manager for %s", dongle_id)
+            return None
+        return _get_active_model_display_name(model_manager)
