@@ -10,7 +10,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
-from .coordinator import CommaDataUpdateCoordinator, CommaDevice
+from .coordinator import CommaDataUpdateCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant

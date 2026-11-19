@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The first poll after Home Assistant started skipped the athena sensors (car battery, car running) on hosts that had booted less than 5 minutes earlier
+
 ### Planned
 - Historical route visualization
 - Navigation destination setting

@@ -83,7 +83,7 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
         )
         self.api_client = api_client
         self._athena_cache: dict[str, AthenaData] = {}
-        self._athena_fetched_at = 0.0
+        self._athena_fetched_at = float("-inf")
 
     async def _async_update_data(self) -> CommaCoordinatorData:
         """Fetch data from API."""
