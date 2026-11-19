@@ -57,6 +57,13 @@ class AthenaData(TypedDict):
     panda_state: dict[str, Any] | None
 
 
+# Only these panda types report the car battery voltage reliably. Others (for
+# example the comma three's "dos") return noise that does not track the battery.
+VOLTAGE_PANDA_TYPES = frozenset({"tres", "cuatro"})
+
+# Raw panda fields exposed as attributes on the battery sensor for debugging
+PANDA_STATE_KEYS = ("pandaType", "harnessStatus", "ignitionLine", "voltage")
+
 NO_ATHENA_DATA = AthenaData(car_battery_voltage=None, car_running=None, panda_state=None)
 
 
@@ -221,9 +228,14 @@ class CommaDataUpdateCoordinator(DataUpdateCoordinator[CommaCoordinatorData]):
             _LOGGER.debug("Could not reach device %s via athena", dongle_id)
             return NO_ATHENA_DATA
 
+        panda = panda_states[0] if panda_states else None
         _LOGGER.debug("Athena pandaStates for %s: %s", dongle_id, panda_states)
         return AthenaData(
-            car_battery_voltage=panda_states[0]["voltage"] / 1000 if panda_states else None,
+            car_battery_voltage=(
+                panda["voltage"] / 1000
+                if panda and panda.get("pandaType") in VOLTAGE_PANDA_TYPES
+                else None
+            ),
             car_running=device_state.get("started") if device_state else None,
-            panda_state=panda_states[0] if panda_states else None,
+            panda_state={k: panda[k] for k in PANDA_STATE_KEYS if k in panda} if panda else None,
         )

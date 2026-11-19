@@ -108,3 +108,54 @@ async def test_device_tracker_location(hass: HomeAssistant, aioclient_mock) -> N
     assert tracker.attributes["latitude"] == 40.0
     assert tracker.attributes["longitude"] == -86.0
     assert "battery_level" not in tracker.attributes
+
+
+@pytest.mark.parametrize("panda_type", ["tres", "cuatro"])
+async def test_voltage_reported_for_supported_panda(
+    hass: HomeAssistant, aioclient_mock, panda_type
+) -> None:
+    """Panda types that measure the battery report the voltage."""
+    await _setup(
+        hass,
+        aioclient_mock,
+        athena={
+            "result": {
+                "deviceState": {"started": True},
+                "pandaStates": [{"pandaType": panda_type, "voltage": 12100}],
+            }
+        },
+    )
+
+    assert float(_state(hass, "sensor", "car_battery_voltage").state) == pytest.approx(12.1)
+
+
+async def test_voltage_unknown_for_unsupported_panda(
+    hass: HomeAssistant, aioclient_mock
+) -> None:
+    """A comma three (dos) returns noise, so the voltage is unknown but debuggable."""
+    await _setup(
+        hass,
+        aioclient_mock,
+        athena={
+            "result": {
+                "deviceState": {"started": True},
+                "pandaStates": [
+                    {
+                        "pandaType": "dos",
+                        "voltage": 24519,
+                        "harnessStatus": "flipped",
+                        "ignitionLine": False,
+                        "uptime": 4054,
+                    }
+                ],
+            }
+        },
+    )
+
+    state = _state(hass, "sensor", "car_battery_voltage")
+    assert state.state == "unknown"
+    assert state.attributes["pandaType"] == "dos"
+    assert state.attributes["voltage"] == 24519
+    assert state.attributes["harnessStatus"] == "flipped"
+    assert "uptime" not in state.attributes
+    assert _state(hass, "binary_sensor", "car_running").state == "on"

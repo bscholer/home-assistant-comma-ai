@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The car battery voltage is only reported for panda types that measure it (comma 3X and comma four). Other hardware, such as the comma three, returned values that did not track the battery, so the sensor now shows unknown there. The raw panda attributes on the sensor are trimmed to the panda type, harness status, ignition line and raw voltage
+
 ### Planned
 - Historical route visualization
 - Navigation destination setting

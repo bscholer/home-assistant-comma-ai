@@ -61,7 +61,7 @@ ROUTES = [
 ATHENA_RESULT = {
     "result": {
         "deviceState": {"started": True},
-        "pandaStates": [{"voltage": 13400}],
+        "pandaStates": [{"pandaType": "tres", "voltage": 13400}],
     }
 }
 
