@@ -63,8 +63,8 @@ class CommaCarRunningSensor(CoordinatorEntity[CommaDataUpdateCoordinator], Binar
         device = self.coordinator.data["devices"].get(self.dongle_id)
         if device is None:
             return None
-        # athena can't reach a sleeping device, which only happens with the car off
-        return bool(device["car_running"])
+        # None (unknown) when athena can't reach the device, e.g. it is asleep or offline
+        return device["car_running"]
 
     @property
     def available(self) -> bool:

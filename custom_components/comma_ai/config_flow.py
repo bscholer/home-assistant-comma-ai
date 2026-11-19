@@ -146,6 +146,7 @@ class CommaConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="reauth_confirm",
             data_schema=vol.Schema({vol.Required(CONF_JWT_TOKEN): str}),
             errors=self.errors,
+            description_placeholders={"jwt_url": JWT_URL},
         )
 
 

@@ -11,7 +11,7 @@
       },
       "reauth_confirm": {
         "title": "comma.ai token expired",
-        "description": "Your comma.ai JWT token has expired. Get a fresh one from https://jwt.comma.ai (tokens expire after 90 days)",
+        "description": "Your comma.ai JWT token has expired. Get a fresh one from {jwt_url} (tokens expire after 90 days)",
         "data": {
           "jwt_token": "JWT Token"
         }
