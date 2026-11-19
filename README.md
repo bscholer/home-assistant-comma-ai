@@ -78,7 +78,7 @@ For each comma.ai device, the following entities will be created:
 
 #### All-Time Statistics
 - `sensor.<device_name>_total_distance` - Total distance driven with openpilot (shown in km or miles, following your Home Assistant unit system)
-- `sensor.<device_name>_total_minutes` - Total minutes driven with openpilot
+- `sensor.<device_name>_total_minutes` - Total time driven with openpilot (shown in days by default; the native unit is minutes, so you can change the display unit in the entity settings)
 - `sensor.<device_name>_total_routes` - Total number of routes driven with openpilot
 
 #### Weekly Statistics
