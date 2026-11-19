@@ -62,6 +62,12 @@ ATHENA_RESULT = {
     "result": {
         "deviceState": {"started": True},
         "pandaStates": [{"voltage": 13400}],
+        "modelManagerSP": {
+            "activeBundle": {
+                "displayName": "The Cool People's Model (October 03, 2025)",
+                "internalName": "TCPM",
+            },
+        },
     }
 }
 

@@ -153,6 +153,12 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
         # raw panda message (voltage in mV, harness, ignition) to debug odd readings
         extra_values_fn=lambda device: device["panda_state"] or {},
     ),
+    CommaSensorEntityDescription(
+        key="driving_model",
+        translation_key="driving_model",
+        icon="mdi:brain",
+        value_fn=lambda device: device["driving_model"],
+    ),
     # All-time stats
     CommaSensorEntityDescription(
         key="total_distance",
