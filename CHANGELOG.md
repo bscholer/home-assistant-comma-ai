@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The car battery sensor exposes the raw panda state as attributes, and the athena `pandaStates` message is logged at debug level, to help diagnose odd voltage readings
+
 ### Fixed
 - The first poll after Home Assistant started skipped the athena sensors (car battery, car running) on hosts that had booted less than 5 minutes earlier
 
