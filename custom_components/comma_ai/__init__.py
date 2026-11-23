@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from homeassistant.config_entries import ConfigEntry
@@ -17,6 +18,8 @@ from .coordinator import CommaDataUpdateCoordinator
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
+    from .livestream import CommaLiveStream
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -26,6 +29,7 @@ class CommaData:
 
     coordinator: CommaDataUpdateCoordinator
     api_client: CommaAPIClient
+    livestreams: dict[str, CommaLiveStream] = field(default_factory=dict)
 
 
 type CommaConfigEntry = ConfigEntry[CommaData]
@@ -68,6 +72,9 @@ async def async_setup_entry(
 async def async_unload_entry(hass: HomeAssistant, entry: CommaConfigEntry) -> bool:
     """Unload comma.ai config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        await asyncio.gather(
+            *(stream.async_stop() for stream in entry.runtime_data.livestreams.values())
+        )
         del entry.runtime_data
     return unload_ok
 
