@@ -1,2 +1,5 @@
 pytest-homeassistant-custom-component
 ruff
+PyTurboJPEG
+# same pinned commit as manifest.json; the PyPI release conflicts with HA's PyAV
+aiortc @ https://github.com/aiortc/aiortc/archive/34b5fd3409220e1aeb8b62f2c56a9ae2085ca8c8.tar.gz
