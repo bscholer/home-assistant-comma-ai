@@ -150,6 +150,14 @@ SENSOR_DESCRIPTIONS: tuple[CommaSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
         value_fn=lambda device: device["car_battery_voltage"],
+        # raw panda message (voltage in mV, harness, ignition) to debug odd readings
+        extra_values_fn=lambda device: device["panda_state"] or {},
+    ),
+    CommaSensorEntityDescription(
+        key="driving_model",
+        translation_key="driving_model",
+        icon="mdi:brain",
+        value_fn=lambda device: device["driving_model"],
     ),
     # All-time stats
     CommaSensorEntityDescription(

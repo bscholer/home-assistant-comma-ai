@@ -45,6 +45,9 @@
       "car_battery_voltage": {
         "name": "Car battery"
       },
+      "driving_model": {
+        "name": "Driving model"
+      },
       "dongle_id": {
         "name": "Dongle ID"
       },

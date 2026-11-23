@@ -76,6 +76,7 @@ For each comma.ai device, the following entities will be created:
 #### Device Status
 - `sensor.<device_name>_last_ping` - Last time the device communicated with comma servers (timestamp)
 - `sensor.<device_name>_last_location_time` - Last location update timestamp
+- `sensor.<device_name>_driving_model` - The active driving model, when the device runs sunnypilot or a fork that publishes it (stock openpilot reports no model)
 
 #### All-Time Statistics
 - `sensor.<device_name>_total_distance` - Total distance driven with openpilot (shown in km or miles, following your Home Assistant unit system)

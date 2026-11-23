@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Road camera (outside) and driver camera (inside) entities, using comma connect's WebRTC live stream. Streams start on demand and stop after 30 seconds without viewers, snapshots and MJPEG are supported, and a `last_error` attribute explains why a stream could not start. Thanks @ds-sebastian (#9)
-
-### Changed
-- Requires Home Assistant 2025.12 or newer (for aiortc's PyAV requirement)
-
 ### Planned
 - Historical route visualization
 - Navigation destination setting
@@ -21,6 +15,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Services for advanced operations
 - Multi-language translations
 - Automatic token expiration warnings
+
+## [1.2.0] - 2026-11-23
+
+### Added
+- Road camera (outside) and driver camera (inside) entities, using comma connect's WebRTC live stream. Streams start on demand and stop after 30 seconds without viewers, snapshots and MJPEG are supported, and a `last_error` attribute explains why a stream could not start. Thanks @ds-sebastian (#9)
+
+### Changed
+- Requires Home Assistant 2025.12 or newer (for aiortc's PyAV requirement)
+
+## [1.1.2] - 2026-11-19
+
+### Added
+- The car battery sensor exposes the raw panda state as attributes, and the athena `pandaStates` message is logged at debug level, to help diagnose odd voltage readings
+
+### Fixed
+- The first poll after Home Assistant started skipped the athena sensors (car battery, car running) on hosts that had booted less than 5 minutes earlier
 
 ## [1.1.1] - 2026-11-19
 
