@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Road camera (outside) and driver camera (inside) entities, using comma connect's WebRTC live stream. Streams start on demand and stop after 30 seconds without viewers, snapshots and MJPEG are supported, and a `last_error` attribute explains why a stream could not start. Thanks @ds-sebastian (#9)
+- Driving model sensor showing the active model on devices running sunnypilot or a fork that publishes it (shows unknown on stock openpilot). Thanks @Nimijneb (#18)
 
 ### Changed
 - Requires Home Assistant 2025.12 or newer (for aiortc's PyAV requirement)
